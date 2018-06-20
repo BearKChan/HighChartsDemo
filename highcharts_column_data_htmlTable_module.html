@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="zh-cn">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>从HTML表格中提取数据并生成图表</title>
+    <script src="./jquery/jquery-3.3.1.min.js"></script>
+    <script src="./highcharts/highcharts.js"></script>
+    <!-- 用于数据加载 -->
+    <script src="./highcharts/data.js"></script>
+    <style type="text/css">
+        #datatable {
+            border: 1px solid #ccc;
+            border-collapse: collapse;
+            border-spacing: 0;
+            font-size: 12px;
+        }
+
+        /*提示：如果不需要再页面显示HTML表格，可以通过CSS样式将其隐藏,如下所示 */
+
+        #datatable {
+            /* display: none;  */
+            /* position: absolute;
+            left: -9999em; */
+        }
+
+        td,
+        th {
+            border: 1px solid #ccc;
+            padding: 4px 20px;
+        }
+    </style>
+</head>
+
+<body>
+    <div id="container" style="min-width: 310px; height: 400px; margin: 0 auto"></div>
+    <p>数据表格</p>
+    <table id="datatable">
+        <thead>
+            <tr>
+                <th></th>
+                <th>小张</th>
+                <th>小潘</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <th>苹果</th>
+                <td>3</td>
+                <td>4</td>
+            </tr>
+            <tr>
+                <th>梨</th>
+                <td>2</td>
+                <td>0</td>
+            </tr>
+            <tr>
+                <th>葡萄</th>
+                <td>5</td>
+                <td>1</td>
+            </tr>
+            <tr>
+                <th>香蕉</th>
+                <td>1</td>
+                <td>1</td>
+            </tr>
+            <tr>
+                <th>橘子</th>
+                <td>2</td>
+                <td>4</td>
+            </tr>
+        </tbody>
+    </table>
+    <script lang="JavaScript">
+        $(document).ready(function () {
+
+            var chart = Highcharts.chart('container', {
+                data: {
+                    table: 'datatable' //直接绑定HTML对应的table标签的id
+                    // 该功能依赖于data.js
+                },
+                chart: {
+                    type: 'column'
+                },
+                title: {
+                    text: '从HTML表格中提取数据并生成图表'
+                },
+                yAxis: {
+                    allowDecimals: false,
+                    title: {
+                        text: '个',
+                        rotation: 0
+                    }
+                },
+                tooltip: {
+                    formatter: function () {
+                        return '<b>' + this.series.name + "</b><br/>" +
+                            this.point.y + '个' + this.point.name.toLowerCase();
+                    }
+                }
+            });
+
+
+        });
+
+
+    </script>
+</body>
+
+</html>
