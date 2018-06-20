@@ -14,4 +14,4 @@ HighChartsDemo
 >>- [highcharts_line_ajax.html](./highcharts_line_ajax.html): 异步加载数据曲线图表
 >>- [highcharts_column_data_cvs.html](./highcharts_column_data_cvs.html):加载cvs文件数据
 >>- [highcharts_column_data_xml.html](./highcharts_column_data_xml.html):加载xml文件数据
->>- [highcharts_column_data_json.html](./highcharts_column_data_json.html):加载json文件数据
+>>- [highcharts_spline_data_json.html](./highcharts_spline_data_json.html):加载json文件数据
