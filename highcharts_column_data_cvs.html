@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="zh-cn">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>处理CVS数据</title>
+    <script src="./jquery/jquery-3.3.1.min.js"></script>
+    <script src="./highcharts/highcharts.js"></script>
+</head>
+
+<body>
+    <div id="container" style="width: 550px; height: 400px; margin: 0 auto"></div>
+    <!-- <pre id="csv">分类,苹果,梨,橙子,香蕉
+        小明,8,4,6,5
+        小红,3,4,2,3
+        小张,86,76,79,77
+        小芳,3,16,13,15</pre> -->
+    <script lang="JavaScript">
+        $(document).ready(function () {
+            var options = {
+                chart: {
+                    renderTo: 'container',
+                    type: 'column',
+                },
+                title: {
+                    text: '水果消费情况'
+                },
+                xAxis: {
+                    categories: []
+                },
+                yAxis: {
+                    title: {
+                        text: '单位'
+                    }
+                },
+                series: [],
+
+            };
+            // var csvData = $('#csv').text();
+
+            // 请求 data.csv 数据
+            $.get('data.csv', function (data) {
+                // 分隔每一行
+                var lines = data.split('\n');
+
+                // 遍历每一行
+                $.each(lines, function (lineNo, line) {
+                    var items = line.split(',');
+
+                    // 处理第一行，即分类
+                    if (lineNo == 0) {
+                        $.each(items, function (itemNo, item) {
+                            if (itemNo > 0) {
+                                options.xAxis.categories.push(item);
+                            }
+                        });
+                    }
+
+                    // 处理其他的每一行
+                    else {
+                        var series = {
+                            data: []
+                        };
+                        $.each(items, function (itemNo, item) {
+                            if (itemNo == 0) {
+                                series.name = item;   // 数据列的名字
+                            } else {
+                                series.data.push(parseFloat(item)); // 数据，记得转换成数值类型
+                            }
+                        });
+                        // 最后将数据 push 到数据列配置里
+                        options.series.push(series);
+                    }
+                });
+
+                // 创建图表
+                var chart = new Highcharts.Chart(options);
+            });
+            // 创建图表
+            // var chart = Highcharts.chart(options);
+
+        });
+
+
+    </script>
+</body>
+
+</html>

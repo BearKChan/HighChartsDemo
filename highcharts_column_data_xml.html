@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="zh-cn">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>处理XML数据</title>
+    <script src="./jquery/jquery-3.3.1.min.js"></script>
+    <script src="./highcharts/highcharts.js"></script>
+</head>
+
+<body>
+    <div id="container" style="width: 550px; height: 400px; margin: 0 auto"></div>
+    <script lang="JavaScript">
+        $(document).ready(function () {
+            var options = {
+                chart: {
+                    renderTo: 'container',
+                    type: 'column',
+                },
+                title: {
+                    text: '水果消费情况'
+                },
+                xAxis: {
+                    categories: []
+                },
+                yAxis: {
+                    title: {
+                        text: '单位'
+                    }
+                },
+                series: [],
+
+            };
+
+            // 请求 data.xml 数据
+            $.get('data.xml', function (xml) {
+
+                // 分割行
+                var $xml = $(xml);
+
+                // 处理分类
+                $xml.find('categories item').each(function (i, category) {
+                    options.xAxis.categories.push($(category).text());
+                });
+
+                // 处理数据列
+                $xml.find('series').each(function (i, series) {
+                    var seriesOptions = {
+                        name: $(series).find('name').text(),
+                        data: []
+                    };
+                    // 处理数据列的数据
+                    $(series).find('data point').each(function (i, point) {
+                        seriesOptions.data.push(parseInt($(point).text()));
+                    });
+                    // 将数据列对象push到数据列数组里面
+                    options.series.push(seriesOptions)
+                });
+
+
+                // 创建图表
+                var chart = new Highcharts.Chart(options);
+            });
+
+        });
+
+
+    </script>
+</body>
+
+</html>

@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<html lang="zh-cn">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>异步加载数据曲线图表</title>
+    <script src="./jquery/jquery-3.3.1.min.js"></script>
+    <script src="./highcharts/highcharts.js"></script>
+    <!-- 异步加载数据需要引入的js文件 -->
+    <script src="./highcharts/data.js"></script>
+</head>
+
+<body>
+    <div id="container" style="width: 550px; height: 400px; margin: 0 auto"></div>
+    <script lang="JavaScript">
+        $(document).ready(function () {
+            // --1.首先配置图表信息
+            // 为图表配置标题
+            var title = {
+                text: "月平均气温"
+            };
+            // 为图表配置副标题
+            var subtitle = {
+                text: "Source: runoob.com"
+            };
+            // 以每周为间隔设置X轴
+            var xAxis = {
+                tickInterval: 7 * 24 * 3600 * 1000, //一周
+                tickWidth: 0,
+                gridLineWidth: 1,
+                lables: {
+                    align: 'left',
+                    x: 3,
+                    y: -3
+                }
+            };
+            // 配置要在Y轴显示的项
+            // 配置两个Y轴
+            var yAxis = [
+                // 左侧Y轴
+                {
+                    title: {
+                        text: null
+                    },
+                    labels: {
+                        align: 'left',
+                        x: 3,
+                        y: 16,
+                        format: '{value:.,0f}'
+
+                    },
+                    showFirstLabel: false
+                },
+                // 右侧Y轴
+                {
+                    linkedTo: 0,
+                    gridLineWidth: 0,
+                    opposite: true,
+                    title: {
+                        text: null
+                    },
+                    labels: {
+                        align: 'right',
+                        x: -3,
+                        y: 16,
+                        format: '{value:.,0f}'
+
+                    },
+                    showFirstLabel: false
+                },
+            ];
+            // 配置提示信息
+            // Tooltip用于设置当鼠标滑向数据点时显示的提示框信息。
+            var tooltip = {
+                shared: true,
+                crosshairs: true
+            }
+
+            // 配置数据点选项
+            // plotOptions用于设置图表中的数据点相关属性。
+            var plotOptions = {
+                series: {
+                    cursor: 'pointer',
+                    point: {
+                        events: {
+                            click: function (e) {
+                                hs.htmlExpand(null, {
+                                    pageOrigin: {
+                                        x: e.pageX || e.clientX,
+                                        y: e.pageY || e.clientY
+                                    },
+                                    headingText: this.series.name,
+                                    maincontentText: Highcharts.dateFormat('%A, %b %e, %Y', this.x)
+                                        + ':<br/> ' + this.y + ' visits',
+                                    width: 200
+                                });
+                            }
+                        }
+                    },
+                    marker: {
+                        lineWidth: 1
+                    }
+                }
+            };
+
+            var legend = {
+                align: 'left',
+                verticalAlign: 'top',
+                y: 20,
+                floating: true,
+                borderWidth: 0
+            };
+
+            // --2.然后配置图表的数据信息
+            // Series:数据列选项用于设置图表中要展示的数据相关的属性。
+            // 配置图表要展示的数据。每个系列是一个数组，每一项在图片中都会生成一条曲线.
+            var series = [{
+                name: 'All visits',
+                lineWidth: 4,
+                marker: {
+                    radius: 4
+                }
+            }, {
+                name: 'New visitors'
+            }];
+
+            // --3.接着创建json数据
+            // 创建json数据:组合是由配置信息
+            var json = {};
+            json.title = title;
+            json.subtitle = subtitle;
+            json.xAxis = xAxis;
+            json.yAxis = yAxis;
+            json.tooltip = tooltip;
+            json.series = series;
+            json.plotOptions = plotOptions;
+            json.legend = legend;
+
+            // --4.最后加载highchart绘制图表
+            $.getJSON('http://www.highcharts.com/samples/data/jsonp.php?filename=analytics.csv&callback=?', function (csv) {
+                var data = {
+                    csv: csv
+                };
+                json.data = data;
+                $('#container').highcharts(json);
+            });
+        });
+
+
+
+    </script>
+</body>
+
+</html>
